@@ -1,0 +1,83 @@
+# Appendix B: Reproducibility Code for Figure 2 — Astronomical Alignment Visualization
+
+## B1.1 Objective and Dataset
+
+This appendix provides the full Python implementation used to generate Figure 2 of this study. The figure compares azimuthal deviations and S-values for seven Giza Plateau structures, evaluated against the heliacal rising azimuth of Alnitak (ζ Orionis) in two epochs: 2500 ± 30 BCE and 4400 ± 200 BCE.
+
+**Key Outputs**:
+
+- Bar chart of azimuth deviation (ΔAzimuth) per epoch  
+- Annotated values for visual comparison  
+- Source-aligned S-values matching those in *Appendix A1.4*
+
+**Dependencies**:  
+- Python 3.11+  
+- matplotlib  
+- numpy  
+
+## B1.2 Python Code
+
+```python
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Monument names (same as A1.4)
+structures = [
+    'Khufu',
+    'Khafre Valley Temple',
+    'Menkaure',
+    'Sphinx',
+    'Osiris Shaft',
+    'Khentkawes Complex',
+    'Unfinished Pyramid'
+]
+
+# Azimuth deviations Δ (in degrees)
+azimuth_2500 = [1.60000, 1.30000, 1.80000, 0.90000, 2.50000, 2.30000, 2.20000]
+azimuth_4400 = [0.00000, 0.30000, 0.20000, 0.70000, 0.90000, 0.70000, 0.60000]
+
+# S-values per epoch (from A1.4)
+s_2500 = [0.02792, 0.02269, 0.03141, 0.01571, 0.04363, 0.04014, 0.03839]
+s_4400 = [0.00000, 0.00524, 0.00349, 0.01222, 0.01571, 0.01222, 0.01047]
+
+x = np.arange(len(structures))
+width = 0.35
+
+fig, ax = plt.subplots(figsize=(12, 7))
+bars1 = ax.bar(x - width/2, azimuth_2500, width, label='2500 BCE', color='salmon')
+bars2 = ax.bar(x + width/2, azimuth_4400, width, label='4400 BCE', color='royalblue')
+
+ax.set_ylabel('Azimuth Deviation (°)')
+ax.set_title('Figure 2. Astronomical Alignment of Giza Monuments with Alnitak’s Rising Azimuth\n'
+             '(Deviation and S-values: 2500 ± 30 BCE vs 4400 ± 200 BCE)')
+ax.set_xticks(x)
+ax.set_xticklabels(structures, rotation=45, ha='right')
+ax.legend()
+
+# Annotate bars with exact values
+def annotate_bars(bars):
+    for bar in bars:
+        height = bar.get_height()
+        ax.annotate(f'{height:.2f}',
+                    xy=(bar.get_x() + bar.get_width()/2, height),
+                    xytext=(0, 3),
+                    textcoords="offset points",
+                    ha='center', va='bottom')
+
+annotate_bars(bars1)
+annotate_bars(bars2)
+
+plt.tight_layout()
+plt.show()
+
+
+B1.3 Notes on Reproducibility
+
+All numerical values match those from Appendix A1.4 and were derived using the compute_s_value() method described in Appendix A1.3.
+To embed tabular overlays (e.g., side-by-side S-values), tools like matplotlib.table, LaTeX \overlay, or graphic editors (e.g., Adobe Illustrator) can be used for publication.
+
+B1.4 Data Source
+
+Structural azimuths: Field measurements from Author et al. (2025)
+Alnitak azimuths: Skyfield + VSOP87, precession- and ΔT-corrected

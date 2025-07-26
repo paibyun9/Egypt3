@@ -20,7 +20,7 @@ This appendix documents the full simulation methodology, parameters, and numeric
 | Static Friction Coefficient | μ_static = 0.6 | Stone-on-platform contact surface |
 | Kinetic Friction Coefficient | μ_kinetic = 0.5 | Not used in static model |
 | Incline Angles Tested | 5° to 35°, step = 1° | I-shaped ramp slope range |
-| Tipping Threshold | ~32.0° | Calculated via tan⁻¹(1.25 / 2.0) |
+| Tipping Threshold | ≈ 32.0° | Calculated as: θₜ = arctan(1.25 / 2.0) |
 | U-Shaped Platform Slope | 0° to 2° | Modeled as flat surface |
 
 ## D.3 Calculation Procedure
@@ -100,5 +100,4 @@ for theta in angles:
     })
 
 df = pd.DataFrame(results)
-print(df)
-```
+print(df)```

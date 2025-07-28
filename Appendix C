@@ -63,7 +63,7 @@ The full Python code for processing this DEM and generating the inundation simul
 | Menkaure Causeway Terminus             | 29.9720        | 31.1300        | 59.8           | Inferred from partial temple remains and causeway alignment |
 | Great Sphinx                           | 29.9753        | 31.1378        | 52.4           | Fixed archaeological reference point; adjacent to Valley Temple |
 
----
+ Note: If you used slightly different coordinates in your reference_points dict, apply them directly here to ensure exact 1:1 reproducibility between Appendix C.6 and C.7.
 
 ## ✅ Validation Summary
 

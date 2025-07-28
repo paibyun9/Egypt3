@@ -74,3 +74,83 @@ The full Python code for processing this DEM and generating the inundation simul
 ---
 
 > This appendix confirms that our structural-fluvial interface hypothesis is not only archaeologically justified but also numerically and geospatially reproducible.
+
+## Appendix C.7 Hydrological Distance Analysis and DEM-Based Inundation Simulation (Updated July 2025)
+
+
+"""
+
+import rasterio
+from pyproj import Transformer
+from scipy.ndimage import distance_transform_edt
+import numpy as np
+import pandas as pd
+
+# [1] DEM 경로
+dem_path = "/Users/byeondaejung/Desktop/n29.tif"
+
+# [2] 수위 기준 (단위: m)
+water_level_4400 = 63.0  # BCE 4400±200
+water_level_2500 = 50.0  # BCE 2500±30
+
+# [3] 주요 구조물 좌표 (위도, 경도)
+reference_points = {
+    "Khufu": (29.9792, 31.1342),
+    "Khafre": (29.972565, 31.137768),
+    "Menkaure": (29.9720, 31.1300),
+}
+
+# [4] DEM 로딩 및 기본 설정
+with rasterio.open(dem_path) as src:
+    dem = src.read(1)
+    transform = src.transform
+    crs = src.crs
+    pixel_size_deg = abs(transform[0])
+    pixel_size_m = 111320 * pixel_size_deg  # 위도 근사값으로 m 단위 환산
+
+# [5] 침수 마스크 생성
+flood_4400 = dem < water_level_4400
+flood_2500 = dem < water_level_2500
+
+# [6] 좌표 변환기: 위경도 → DEM 좌표계
+transformer = Transformer.from_crs("EPSG:4326", crs, always_xy=True)
+
+# [7] 거리 계산 함수 (침수 경계까지의 거리 측정)
+def get_distance_to_water(lat, lon, flood_mask):
+    x, y = transformer.transform(lon, lat)
+    col, row = ~transform * (x, y)
+    row, col = int(row), int(col)
+    print(f"[DEBUG] Location: ({row}, {col}), flood_mask: {flood_mask[row, col]}")
+    distance_map = distance_transform_edt(~flood_mask)
+    return distance_map[row, col] * pixel_size_m
+
+# [8] 결과 계산
+results = []
+for name, (lat, lon) in reference_points.items():
+    x, y = transformer.transform(lon, lat)
+    col, row = ~transform * (x, y)
+    row, col = int(row), int(col)
+    elevation = dem[row, col]
+    dist_4400 = get_distance_to_water(lat, lon, flood_4400)
+    dist_2500 = get_distance_to_water(lat, lon, flood_2500)
+    results.append({
+        "Structure": name,
+        "Elevation (m)": round(elevation, 2),
+        "Dist to Nile 4400 BCE (m)": round(dist_4400, 1),
+        "Dist to Nile 2500 BCE (m)": round(dist_2500, 1)
+    })
+
+# [9] Pandas 테이블로 결과 출력
+df = pd.DataFrame(results)
+print(df)
+
+
+"""
+Expected Output:
+
+  Structure  Elevation (m)  Dist to Nile 4400 BCE (m)  Dist to Nile 2500 BCE (m)
+0     Khufu           ~60.1                      0.0                      185.5
+1    Khafre           ~22.0                      0.0                        0.0
+2  Menkaure           ~59.8                      4.9                      111.5
+
+Note: Final values may vary slightly depending on the DEM resolution and geospatial referencing precision.

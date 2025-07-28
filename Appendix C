@@ -58,7 +58,7 @@ The full Python code for processing this DEM and generating the inundation simul
 
 | Structure (Functional Reference Point) | Latitude (°N) | Longitude (°E) | Elevation (m) | Source / Notes |
 |----------------------------------------|----------------|----------------|----------------|----------------|
-| Khufu Causeway Terminus                | 29.9785        | 31.1400        | 60.1           | Inferred from Nazlet el-Samman slope and causeway trajectory |
+| Khufu Causeway Terminus                | 29.9792        | 31.1342        | 60.1           | Inferred from Nazlet el-Samman slope and causeway trajectory |
 | **Khafre Valley Temple**               | **29.972565**  | **31.137768**  | **22.0**       | **DEM-based measurement at functional dock-level reference point** |
 | Menkaure Causeway Terminus             | 29.9720        | 31.1300        | 59.8           | Inferred from partial temple remains and causeway alignment |
 | Great Sphinx                           | 29.9753        | 31.1378        | 52.4           | Fixed archaeological reference point; adjacent to Valley Temple |
